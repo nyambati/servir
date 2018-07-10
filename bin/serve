@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const app = require('../lib/server');
+const parseCommandArgs = require('minimist');
+
+const defaultOptions = {
+  port: Number(process.env.PORT) || 4040,
+  dir: process.env.PUBLIC_DIR || '.',
+  logstash: Boolean(process.env.ENABLE_LOGSTASH) || false,
+  rotate: Boolean(process.env.ROTATE_LOGS) || true,
+  logsDir: process.env.OGS_DIR || 'logs',
+  app: process.env.APP_NAME || 'combined',
+  https: Boolean(process.env.HTTPS) || true
+};
+
+const args = parseCommandArgs(process.argv.slice(2));
+
+const options = Object.assign({}, defaultOptions, args);
+
+const port = Number(options.port);
+
+const server = http.createServer(app(options));
+
+const startServer = port => {
+  return server.listen(port, error => {
+    if (error) throw error;
+    console.log(`Server running on port ${port}`);
+  });
+};
+
+if (options.help) {
+  console.log('This is help');
+  process.exit(0);
+}
+
+startServer(port);

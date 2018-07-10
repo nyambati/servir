@@ -1,0 +1,24 @@
+{
+  "name": "static-serve",
+  "version": "1.0.0",
+  "main": "bin/serve",
+  "preferGlobal": true,
+  "bin": {
+    "serve": "bin/serve"
+  },
+  "scripts": {
+    "start": "nodemon bin/serve -- --dir public"
+  },
+  "repository": "git@github.com:nyambati/static-serve.git",
+  "author": "Nyambati Thomas <thomas.nyambati@andela.com>",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.7.2",
+    "connect": "^3.6.6",
+    "express": "^4.16.3",
+    "express-winston": "^2.5.1",
+    "minimist": "^1.2.0",
+    "winston": "^3.0.0",
+    "winston-daily-rotate-file": "^3.2.3"
+  }
+}
