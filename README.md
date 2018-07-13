@@ -21,6 +21,7 @@ This apps works by running `serve [options]` the options are provided belows
 - --app : Specifies the name of the application, used to name logs files, default `combined`
 - --https : Specifies whether we should enforce https redirection default `false`.
 - --port : Specifies the port to start server at. Default 4040
+- --rotate : Instructs rotation of logs, default true
 
 #### Environment variables for options
 
@@ -30,7 +31,7 @@ This apps works by running `serve [options]` the options are provided belows
 - APP_NAME : Specifies the name of the application, used to name logs files, default `combined`
 - HTTPS : Specifies whether we should enforce https redirection default `false`.
 - PORT : Specifies the port to start server at. Default 4040
-- ROTATE_LOGS : Instructs to rotate logs, default true
+- ROTATE_LOGS : Instructs rotation of logs, default true
 
 ## Testing
 
