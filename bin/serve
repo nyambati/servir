@@ -1,20 +1,34 @@
 #!/usr/bin/env node
 
-const http = require('http');
-const app = require('../lib/server');
-const parseCommandArgs = require('minimist');
+const http = require("http");
+const app = require("../lib/server");
+const parseCommandArgs = require("minimist");
+const commandLineUsage = require("command-line-usage");
+const sections = require("../lib/help");
 
 const defaultOptions = {
   port: Number(process.env.PORT) || 4040,
-  dir: process.env.PUBLIC_DIR || '.',
-  logstash: Boolean(process.env.ENABLE_LOGSTASH) || false,
-  rotate: Boolean(process.env.ROTATE_LOGS) || true,
-  logsDir: process.env.OGS_DIR || 'logs',
-  app: process.env.APP_NAME || 'combined',
-  https: Boolean(process.env.HTTPS) || true
+  public: process.env.PUBLIC_DIR || ".",
+  logstash: process.env.ENABLE_LOGSTASH || false,
+  rotate: process.env.ROTATE_LOGS || true,
+  logsDir: process.env.LOGS_DIR || "logs",
+  app: process.env.APP_NAME || "combined",
+  secure: process.env.HTTPS
 };
 
 const args = parseCommandArgs(process.argv.slice(2));
+
+if (args.v || args.version) {
+  console.log("Serve static version: ", require("../package.json").version);
+  process.exit(0);
+}
+if (args.h || args.help) {
+  const usage = commandLineUsage(sections);
+  console.log(usage);
+  process.exit(0);
+}
+
+args.public = args._[0] ? args._[0] : defaultOptions.public;
 
 const options = Object.assign({}, defaultOptions, args);
 
@@ -25,13 +39,10 @@ const server = http.createServer(app(options));
 const startServer = port => {
   return server.listen(port, error => {
     if (error) throw error;
-    console.log(`Server running on port ${port}`);
+    console.log(
+      `Serving content from ${args.public} directory on port ${port}`
+    );
   });
 };
-
-if (options.help) {
-  console.log('This is help');
-  process.exit(0);
-}
 
 startServer(port);
