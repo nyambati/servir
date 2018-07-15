@@ -3,16 +3,47 @@
 const http = require('http');
 const app = require('../lib/server');
 const parseCommandArgs = require('minimist');
+const commandLineUsage = require('command-line-usage');
 
 const defaultOptions = {
   port: Number(process.env.PORT) || 4040,
   dir: process.env.PUBLIC_DIR || '.',
-  logstash: Boolean(process.env.ENABLE_LOGSTASH) || false,
-  rotate: Boolean(process.env.ROTATE_LOGS) || true,
+  logstash: process.env.ENABLE_LOGSTASH || false,
+  rotate: process.env.ROTATE_LOGS || true,
   logsDir: process.env.OGS_DIR || 'logs',
   app: process.env.APP_NAME || 'combined',
-  https: Boolean(process.env.HTTPS) || true
+  https: process.env.HTTPS || true
 };
+
+const sections = [
+  {
+    header: 'Static Serve',
+    content: ' Serves static application on production environment'
+  },
+  {
+    header: 'Synopsis',
+    content: [
+      '$ serve {bold --port} 3000 {bold --https} ...',
+      '$ serve {bold --help}'
+    ]
+  },
+  {
+    header: 'Options',
+    optionList: [
+      { name: 'help', description: 'Print this usage guide.' },
+      {
+        name: 'port',
+        description: 'Port to run application in, default 4040.'
+      },
+      { name: 'logstash', description: 'Create logstash formatted logs' },
+      { name: 'dir', description: 'Location to serve static files from.' },
+      { name: 'rotate', description: 'Rotates logs daily' },
+      { name: 'logsDir', description: 'Logs directory' },
+      { name: 'app', description: 'Name of the application' },
+      { name: 'https', description: 'Enforce https redirection' }
+    ]
+  }
+];
 
 const args = parseCommandArgs(process.argv.slice(2));
 
@@ -30,7 +61,8 @@ const startServer = port => {
 };
 
 if (options.help) {
-  console.log('This is help');
+  const usage = commandLineUsage(sections);
+  console.log(usage);
   process.exit(0);
 }
 
