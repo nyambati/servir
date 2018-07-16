@@ -10,7 +10,7 @@ const defaultOptions = {
   port: Number(process.env.PORT) || 4040,
   public: process.env.PUBLIC_DIR || '.',
   logstash: process.env.ENABLE_LOGSTASH || false,
-  rotate: process.env.ROTATE_LOGS || true,
+  rotate: process.env.ROTATE_LOGS || false,
   logsDir: process.env.LOGS_DIR || 'logs',
   app: process.env.APP_NAME || 'combined',
   secure: process.env.HTTPS
