@@ -1,48 +1,70 @@
 #!/usr/bin/env node
 
-const http = require('http');
-const app = require('../lib/server');
-const parseCommandArgs = require('minimist');
-const commandLineUsage = require('command-line-usage');
-const sections = require('../lib/help');
+const Server = require("../lib/server");
+const minimist = require("minimist");
+const commandLineUsage = require("command-line-usage");
+const helpSections = require("../lib/help");
 
-const defaultOptions = {
-  port: Number(process.env.PORT) || 4040,
-  public: process.env.PUBLIC_DIR || '.',
-  logstash: process.env.ENABLE_LOGSTASH || false,
-  rotate: process.env.ROTATE_LOGS || false,
-  logsDir: process.env.LOGS_DIR || 'logs',
-  app: process.env.APP_NAME || 'combined',
-  secure: process.env.HTTPS
-};
+class Serve {
+  constructor() {
+    this.http = require("http");
 
-const args = parseCommandArgs(process.argv.slice(2));
+    this.defaultOptions = {
+      port: Number(process.env.PORT) || 4040,
+      public: process.env.PUBLIC_DIR || ".",
+      logstash: process.env.ENABLE_LOGSTASH,
+      rotate: process.env.ROTATE_LOGS,
+      logsDir: process.env.LOGS_DIR || "logs",
+      app: process.env.APP_NAME || "combined",
+      secure: process.env.HTTPS
+    };
 
-if (args.v || args.version) {
-  console.log('Serve static version: ', require('../package.json').version);
-  process.exit(0);
+    this.parseCommandArgs();
+    this.usage();
+    this.version();
+    this.app = new Server(this.options).instance;
+  }
+
+  parseCommandArgs() {
+    this.args = minimist(process.argv.slice(2));
+    this.args.public = this.args._[0]
+      ? this.args._[0]
+      : this.defaultOptions.public;
+  }
+
+  version() {
+    if (this.args.v || this.args.version) {
+      console.log("Serve static version: ", require("../package.json").version);
+      return process.exit(0);
+    }
+  }
+
+  usage() {
+    if (this.args.h || this.args.help) {
+      console.log(commandLineUsage(helpSections));
+      return process.exit(0);
+    }
+  }
+
+  get options() {
+    return Object.assign({}, this.defaultOptions, this.args);
+  }
+
+  get port() {
+    return Number(this.options.p || this.options.port);
+  }
+
+  start() {
+    const server = this.http.createServer(this.app);
+    return server.listen(this.port, error => {
+      if (error) throw error;
+      console.log(
+        `Serving content from ${this.args.public} directory on port ${
+          this.port
+        }`
+      );
+    });
+  }
 }
-if (args.h || args.help) {
-  const usage = commandLineUsage(sections);
-  console.log(usage);
-  process.exit(0);
-}
 
-args.public = args._[0] ? args._[0] : defaultOptions.public;
-
-const options = Object.assign({}, defaultOptions, args);
-
-const port = Number(options.p || options.port);
-
-const server = http.createServer(app(options));
-
-const startServer = port => {
-  return server.listen(port, error => {
-    if (error) throw error;
-    console.log(
-      `Serving content from ${args.public} directory on port ${port}`
-    );
-  });
-};
-
-startServer(port);
+new Serve().start();
