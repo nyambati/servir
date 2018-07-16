@@ -11,17 +11,16 @@ Its build using the following modules
 
 ## Commands
 
-This apps works by running `serve [options]` the options are provided belows
+This apps works by running `serve [directory] [options]` the options are provided belows
 
 ### Options
 
-- --dir : Specifies the directory static files should be served from
-- --logstash : Instructs creation of logs formated for logstash
-- --logsDir : Specifies the folder to place logs, default `logs`
-- --app : Specifies the name of the application, used to name logs files, default `combined`
-- --https : Specifies whether we should enforce https redirection default `false`.
-- --port : Specifies the port to start server at. Default 4040
-- --rotate : Instructs rotation of logs, default true
+- --logstash, -l : Instructs creation of logs formated for logstash, default `false`
+- --logsDir, -d : Specifies the folder to place logs, default `logs`
+- --app, a : Specifies the name of the application, used to name logs files, default `combined`
+- --secure, -s : Specifies whether we should enforce https redirection default `false`.
+- --port, -p : Specifies the port to start server at. Default `4040`
+- --rotate, -r : Instructs rotation of logs, default `true`
 
 #### Environment variables for options
 

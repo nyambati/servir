@@ -4,66 +4,45 @@ const http = require('http');
 const app = require('../lib/server');
 const parseCommandArgs = require('minimist');
 const commandLineUsage = require('command-line-usage');
+const sections = require('../lib/help');
 
 const defaultOptions = {
   port: Number(process.env.PORT) || 4040,
-  dir: process.env.PUBLIC_DIR || '.',
+  public: process.env.PUBLIC_DIR || '.',
   logstash: process.env.ENABLE_LOGSTASH || false,
   rotate: process.env.ROTATE_LOGS || true,
-  logsDir: process.env.OGS_DIR || 'logs',
+  logsDir: process.env.LOGS_DIR || 'logs',
   app: process.env.APP_NAME || 'combined',
-  https: process.env.HTTPS || true
+  secure: process.env.HTTPS
 };
-
-const sections = [
-  {
-    header: 'Static Serve',
-    content: ' Serves static application on production environment'
-  },
-  {
-    header: 'Synopsis',
-    content: [
-      '$ serve {bold --port} 3000 {bold --https} ...',
-      '$ serve {bold --help}'
-    ]
-  },
-  {
-    header: 'Options',
-    optionList: [
-      { name: 'help', description: 'Print this usage guide.' },
-      {
-        name: 'port',
-        description: 'Port to run application in, default 4040.'
-      },
-      { name: 'logstash', description: 'Create logstash formatted logs' },
-      { name: 'dir', description: 'Location to serve static files from.' },
-      { name: 'rotate', description: 'Rotates logs daily' },
-      { name: 'logsDir', description: 'Logs directory' },
-      { name: 'app', description: 'Name of the application' },
-      { name: 'https', description: 'Enforce https redirection' }
-    ]
-  }
-];
 
 const args = parseCommandArgs(process.argv.slice(2));
 
+if (args.v || args.version) {
+  console.log('Serve static version: ', require('../package.json').version);
+  process.exit(0);
+}
+if (args.h || args.help) {
+  const usage = commandLineUsage(sections);
+  console.log(usage);
+  process.exit(0);
+}
+
+args.public = args._[0] ? args._[0] : defaultOptions.public;
+
 const options = Object.assign({}, defaultOptions, args);
 
-const port = Number(options.port);
+const port = Number(options.p || options.port);
 
 const server = http.createServer(app(options));
 
 const startServer = port => {
   return server.listen(port, error => {
     if (error) throw error;
-    console.log(`Server running on port ${port}`);
+    console.log(
+      `Serving content from ${args.public} directory on port ${port}`
+    );
   });
 };
-
-if (options.help) {
-  const usage = commandLineUsage(sections);
-  console.log(usage);
-  process.exit(0);
-}
 
 startServer(port);
