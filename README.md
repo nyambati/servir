@@ -1,13 +1,14 @@
-# static-serve
+# Servir
 
-This is an experimental server to host production static apps, it will be able to collect and rotate logs.
+This is an ExpressJs based server to host static files and single page application on production. It provides the options to create and rotate logs as well as enforce https redirection.
 
 Its build using the following modules
 
-- ExpressJs
-- Winston
-- Express winston
-- Minimist
+- [ExpressJs](https://www.npmjs.com/package/express)
+- [Winston](https://www.npmjs.com/package/winston)
+- [Express winston](https://www.npmjs.com/package/express-winston)
+- [Minimist](https://www.npmjs.com/package/minimist)
+- [Command line Usage](https://www.npmjs.com/package/command-line-usage)
 
 ## Commands
 
