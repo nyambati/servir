@@ -9,6 +9,7 @@ Its build using the following modules
 - [Express winston](https://www.npmjs.com/package/express-winston)
 - [Minimist](https://www.npmjs.com/package/minimist)
 - [Command line Usage](https://www.npmjs.com/package/command-line-usage)
+- [Path](https://www.npmjs.com/package/path)
 
 ## Commands
 
