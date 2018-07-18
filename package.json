@@ -1,13 +1,13 @@
 {
   "name": "servir",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "bin/serve",
   "preferGlobal": true,
   "bin": {
     "serve": "bin/serve"
   },
   "scripts": {
-    "start": "nodemon bin/serve -- --dir public"
+    "start": "nodemon bin/serve public"
   },
   "repository": "git@github.com:nyambati/servir.git",
   "author": "Nyambati Thomas <thomas.nyambati@andela.com>",
